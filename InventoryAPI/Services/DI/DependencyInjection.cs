@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Services.Services;
 
 namespace Services.DI
 {
@@ -6,6 +7,8 @@ namespace Services.DI
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
+            services.AddScoped<IProductService, ProductService>();
+
             return services;
         }
     }
