@@ -417,3 +417,5 @@ FodyWeavers.xsd
 *.msm
 *.msp
 /InventoryAPI/API/notifications.db
+/InventoryAPI/API/notifications.db-shm
+/InventoryAPI/API/notifications.db-wal
