@@ -8,6 +8,7 @@ namespace Services.DI
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
             services.AddScoped<IProductService, ProductService>();
+            services.AddSingleton<IRabbitMqPublisher, RabbitMqPublisher>();
 
             return services;
         }
