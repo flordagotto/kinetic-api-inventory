@@ -9,6 +9,7 @@ namespace Services.Services
     public interface IProductService
     {
         Task Create(NewProductDTO newProductDTO);
+        Task<IEnumerable<ProductDTO>> GetAll();
     }
 
     public class ProductService : IProductService
@@ -45,9 +46,10 @@ namespace Services.Services
             {
                 var products = await _productRepository.Get();
 
-                var productsDTO = _mapper.Map<List<ProductDTO>>(products);
+                if (products != null && products.Any())
+                    return _mapper.Map<List<ProductDTO>>(products);
 
-                return productsDTO;
+                return [];
             }
             catch (Exception ex)
             {

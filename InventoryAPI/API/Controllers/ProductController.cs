@@ -23,5 +23,15 @@ namespace API.Controllers
             return Created();
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var result = await _productService.GetAll();
+
+            if (!result.Any())
+                return NoContent();
+
+            return Ok(result);
+        }
     }
 }
