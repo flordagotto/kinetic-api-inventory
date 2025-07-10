@@ -1,4 +1,4 @@
-﻿namespace DTOs
+﻿namespace DTOs.ApiDtos
 {
     public class ProductInputDTO
     {

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using DAL.Entities;
 using DAL.Repositories;
-using DTOs;
+using DTOs.ApiDtos;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualBasic;
 
@@ -21,12 +21,14 @@ namespace Services.Services
         private readonly IProductRepository _productRepository;
         private readonly IMapper _mapper;
         private readonly ILogger<ProductService> _logger;
+        private readonly IRabbitMqPublisher _rabbitPublisher;
 
-        public ProductService(IProductRepository productRepository, IMapper mapper, ILogger<ProductService> logger)
+        public ProductService(IProductRepository productRepository, IMapper mapper, ILogger<ProductService> logger, IRabbitMqPublisher rabbitPublisher)
         {
             _productRepository = productRepository;
             _mapper = mapper;
             _logger = logger;
+            _rabbitPublisher = rabbitPublisher;
         }
 
         public async Task Create(ProductInputDTO newProductDTO)
