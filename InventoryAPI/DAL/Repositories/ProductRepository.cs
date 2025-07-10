@@ -7,6 +7,7 @@ namespace DAL.Repositories
     {
         Task Add(Product product);
         Task<IEnumerable<Product>> Get();
+        Task<Product?> GetById(Guid id);
     }
 
     public class ProductRepository : IProductRepository
@@ -26,5 +27,7 @@ namespace DAL.Repositories
         }
 
         public async Task<IEnumerable<Product>> Get() => await _context.Products.ToListAsync();
+
+        public async Task<Product?> GetById(Guid id) => await _context.Products.FirstOrDefaultAsync(x => x.Id == id);
     }
 }
