@@ -1,8 +1,10 @@
 using DAL.DI;
+using Services.DI;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddInfrastructureServices();
+builder.Services.AddApplicationServices();
 
 builder.Services.AddControllers();
 
