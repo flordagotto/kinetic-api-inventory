@@ -9,7 +9,7 @@ namespace Services.Mappers
         public ProductMapper()
         {
             CreateMap<ProductDTO, Product>();
-            CreateMap<NewProductDTO, Product>()
+            CreateMap<ProductInputDTO, Product>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
 
             CreateMap<Product, ProductDTO>();

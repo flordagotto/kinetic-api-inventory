@@ -8,9 +8,10 @@ namespace Services.Services
 {
     public interface IProductService
     {
-        Task Create(NewProductDTO newProductDTO);
+        Task Create(ProductInputDTO newProductDTO);
         Task<IEnumerable<ProductDTO>> GetAll();
         Task<ProductDTO?> GetById(Guid id);
+        Task Update(Guid id, ProductInputDTO productDTO);
     }
 
     public class ProductService : IProductService
@@ -26,7 +27,7 @@ namespace Services.Services
             _logger = logger;
         }
 
-        public async Task Create(NewProductDTO newProductDTO)
+        public async Task Create(ProductInputDTO newProductDTO)
         {
             try
             {
@@ -73,6 +74,31 @@ namespace Services.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message, "Error retrieving product.");
+                throw;
+            }
+        }
+
+        public async Task Update(Guid id, ProductInputDTO productDTO)
+        {
+            try
+            {
+                var oldProduct = await _productRepository.GetById(id);
+
+                if (oldProduct == null)
+                    throw new ArgumentException($"Product with id {id} not found");
+                // TODO: podria usar excepciones personalizadas y un middleware que trate esta excepcion como un 400
+
+                oldProduct.Stock = productDTO.Stock;
+                oldProduct.Price = productDTO.Price;
+                oldProduct.Description = productDTO.Description;
+                oldProduct.Category = productDTO.Category;
+                oldProduct.ProductName = productDTO.ProductName;
+
+                await _productRepository.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, "Error updating product.");
                 throw;
             }
         }
