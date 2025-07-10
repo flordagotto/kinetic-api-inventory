@@ -41,7 +41,7 @@ namespace Services.Services
            .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
                (ex, time) => Console.WriteLine($"Retrying after {time.TotalSeconds}s due to: {ex.Message}"));
 
-            // Open the circuit after 2 failures in a row, and waits 15 seconds to re open it
+            // Opens the circuit after 2 failures in a row, and waits 15 seconds to re open it
             _circuitBreakerPolicy = Policy.Handle<BrokerUnreachableException>()
                 .Or<Exception>()
                 .CircuitBreakerAsync(2, TimeSpan.FromSeconds(15),
