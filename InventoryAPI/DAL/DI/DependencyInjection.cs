@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DAL.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DAL.DI
@@ -9,6 +10,8 @@ namespace DAL.DI
         {
             services.AddDbContext<ProductsDbContext>(options =>
                 options.UseSqlite("Data Source=notifications.db"));
+
+            services.AddScoped<IProductRepository, ProductRepository>();
 
             return services;
         }
