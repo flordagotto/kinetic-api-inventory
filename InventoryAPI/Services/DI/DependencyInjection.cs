@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Services.Mappers;
 using Services.Services;
 
 namespace Services.DI
@@ -9,6 +10,8 @@ namespace Services.DI
         {
             services.AddScoped<IProductService, ProductService>();
             services.AddSingleton<IRabbitMqPublisher, RabbitMqPublisher>();
+
+            services.AddAutoMapper(typeof(ProductMapper).Assembly);
 
             return services;
         }
