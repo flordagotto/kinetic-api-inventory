@@ -39,5 +39,22 @@ namespace Services.Services
             }
         }
 
+        public async Task<IEnumerable<ProductDTO>> GetAll()
+        {
+            try
+            {
+                var products = await _productRepository.Get();
+
+                var productsDTO = _mapper.Map<List<ProductDTO>>(products);
+
+                return productsDTO;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, "Error retrieving products.");
+                throw;
+            }
+        }
+
     }
 }
