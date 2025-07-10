@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace API.Validations
 {
-    public class NewProductValidation : AbstractValidator<NewProductDTO>
+    public class NewProductValidation : AbstractValidator<ProductInputDTO>
     {
         public NewProductValidation()
         {

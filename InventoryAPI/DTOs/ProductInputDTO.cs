@@ -1,6 +1,6 @@
 ﻿namespace DTOs
 {
-    public class NewProductDTO
+    public class ProductInputDTO
     {
         public string ProductName { get; set; } = null!;
         public string Description { get; set; } = null!;

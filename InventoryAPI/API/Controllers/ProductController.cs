@@ -16,7 +16,7 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] NewProductDTO newProductDTO)
+        public async Task<IActionResult> Create([FromBody] ProductInputDTO newProductDTO)
         {
             await _productService.Create(newProductDTO);
 
@@ -43,6 +43,14 @@ namespace API.Controllers
                 return NoContent();
 
             return Ok(result);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] ProductInputDTO productInputDTO)
+        {
+            await _productService.Update(id, productInputDTO);
+
+            return Ok();
         }
     }
 }
