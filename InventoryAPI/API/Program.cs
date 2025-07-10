@@ -1,3 +1,5 @@
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using DAL;
 using DAL.DI;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +13,9 @@ builder.Services.AddInfrastructureServices();
 builder.Services.AddApplicationServices();
 
 builder.Services.AddControllers();
+
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+builder.Services.AddFluentValidationAutoValidation();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

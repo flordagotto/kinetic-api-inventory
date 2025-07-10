@@ -34,7 +34,7 @@ namespace Services.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message, "Error creating a player.");
+                _logger.LogError(ex.Message, "Error creating a product.");
                 throw;
             }
         }
