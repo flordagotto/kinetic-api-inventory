@@ -3,13 +3,10 @@ using FluentValidation;
 
 namespace API.Validations
 {
-    public class ProductValidation : AbstractValidator<ProductDTO>
+    public class NewProductValidation : AbstractValidator<NewProductDTO>
     {
-        public ProductValidation()
+        public NewProductValidation()
         {
-            RuleFor(x => x.Id)
-                .NotEmpty().WithMessage("The product id can not be empty");
-
             RuleFor(x => x.ProductName)
                 .NotEmpty().WithMessage("The product name can not be empty");
 

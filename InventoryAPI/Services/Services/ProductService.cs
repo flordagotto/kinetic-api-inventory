@@ -77,5 +77,28 @@ namespace Services.Services
             }
         }
 
+        public async Task Update(ProductDTO productDTO)
+        {
+            try
+            {
+                var oldProduct = await _productRepository.GetById(productDTO.Id);
+
+                if (oldProduct == null)
+                    throw new ArgumentException($"Product with id {productDTO.Id} not found");
+                // TODO: podria usar excepciones personalizadas y un middleware que trate esta excepcion como un 400
+
+                oldProduct.Stock = productDTO.Stock;
+                oldProduct.Price = productDTO.Price;
+                oldProduct.Description = productDTO.Description;
+                oldProduct.Category = productDTO.Category;
+                oldProduct.ProductName = productDTO.ProductName;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, "Error updating product.");
+                throw;
+            }
+        }
+
     }
 }
