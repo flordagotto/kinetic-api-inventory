@@ -33,5 +33,16 @@ namespace API.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet("id")]
+        public async Task<IActionResult> GetById([FromQuery] Guid id)
+        {
+            var result = await _productService.GetById(id);
+
+            if (result == null)
+                return NoContent();
+
+            return Ok(result);
+        }
     }
 }
