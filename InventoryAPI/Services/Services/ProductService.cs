@@ -13,6 +13,7 @@ namespace Services.Services
         Task<IEnumerable<ProductDTO>> GetAll();
         Task<ProductDTO?> GetById(Guid id);
         Task Update(Guid id, ProductInputDTO productDTO);
+        Task Delete(Guid id);
     }
 
     public class ProductService : IProductService
