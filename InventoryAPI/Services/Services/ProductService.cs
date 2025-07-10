@@ -10,6 +10,7 @@ namespace Services.Services
     {
         Task Create(NewProductDTO newProductDTO);
         Task<IEnumerable<ProductDTO>> GetAll();
+        Task<ProductDTO?> GetById(Guid id);
     }
 
     public class ProductService : IProductService
@@ -54,6 +55,24 @@ namespace Services.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message, "Error retrieving products.");
+                throw;
+            }
+        }
+
+        public async Task<ProductDTO?> GetById(Guid id)
+        {
+            try
+            {
+                var product = await _productRepository.GetById(id);
+
+                if (product != null)
+                    return _mapper.Map<ProductDTO>(product);
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, "Error retrieving product.");
                 throw;
             }
         }
