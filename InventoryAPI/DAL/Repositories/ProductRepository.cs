@@ -1,11 +1,12 @@
 ﻿using DAL.Entities;
-using System.Numerics;
+using Microsoft.EntityFrameworkCore;
 
 namespace DAL.Repositories
 {
     public interface IProductRepository
     {
         Task Add(Product product);
+        Task<IEnumerable<Product>> Get();
     }
 
     public class ProductRepository : IProductRepository
@@ -23,5 +24,7 @@ namespace DAL.Repositories
 
             await _context.SaveChangesAsync();
         }
+
+        public async Task<IEnumerable<Product>> Get() => await _context.Products.ToListAsync();
     }
 }

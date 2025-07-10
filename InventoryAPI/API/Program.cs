@@ -3,7 +3,7 @@ using FluentValidation.AspNetCore;
 using DAL;
 using DAL.DI;
 using Microsoft.EntityFrameworkCore;
-using Services.DI;
+using Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

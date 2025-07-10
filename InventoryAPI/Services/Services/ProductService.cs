@@ -9,6 +9,7 @@ namespace Services.Services
     public interface IProductService
     {
         Task Create(NewProductDTO newProductDTO);
+        Task<IEnumerable<ProductDTO>> GetAll();
     }
 
     public class ProductService : IProductService
@@ -35,6 +36,24 @@ namespace Services.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message, "Error creating a product.");
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<ProductDTO>> GetAll()
+        {
+            try
+            {
+                var products = await _productRepository.Get();
+
+                if (products != null && products.Any())
+                    return _mapper.Map<List<ProductDTO>>(products);
+
+                return [];
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, "Error retrieving products.");
                 throw;
             }
         }

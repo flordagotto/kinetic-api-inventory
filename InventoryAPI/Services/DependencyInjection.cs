@@ -2,7 +2,7 @@
 using Services.Mappers;
 using Services.Services;
 
-namespace Services.DI
+namespace Services
 {
     public static class DependencyInjection
     {
