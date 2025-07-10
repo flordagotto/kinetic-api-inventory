@@ -24,7 +24,6 @@ namespace Services.Services
             _logger = logger;
         }
 
-
         public async Task Create(NewProductDTO newProductDTO)
         {
             try

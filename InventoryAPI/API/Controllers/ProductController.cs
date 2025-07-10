@@ -1,3 +1,4 @@
+using DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Services.Services;
 
@@ -13,5 +14,14 @@ namespace API.Controllers
         {
             _productService = productService;
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] NewProductDTO newProductDTO)
+        {
+            await _productService.Create(newProductDTO);
+
+            return Created();
+        }
+
     }
 }
