@@ -8,6 +8,7 @@ namespace DAL.Repositories
         Task Add(Product product);
         Task<IEnumerable<Product>> Get();
         Task<Product?> GetById(Guid id);
+        Task Delete(Product product);
         Task SaveChangesAsync();
     }
 
@@ -30,6 +31,13 @@ namespace DAL.Repositories
         public async Task<IEnumerable<Product>> Get() => await _context.Products.ToListAsync();
 
         public async Task<Product?> GetById(Guid id) => await _context.Products.FirstOrDefaultAsync(x => x.Id == id);
+
+        public async Task Delete(Product product)
+        {
+            _context.Products.Remove(product);
+
+            await _context.SaveChangesAsync();
+        }
 
         public async Task SaveChangesAsync()
         {

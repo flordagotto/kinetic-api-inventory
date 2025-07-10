@@ -34,8 +34,8 @@ namespace API.Controllers
             return Ok(result);
         }
 
-        [HttpGet("id")]
-        public async Task<IActionResult> GetById([FromQuery] Guid id)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
             var result = await _productService.GetById(id);
 
@@ -49,6 +49,14 @@ namespace API.Controllers
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] ProductInputDTO productInputDTO)
         {
             await _productService.Update(id, productInputDTO);
+
+            return Ok();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
+        {
+            await _productService.Delete(id);
 
             return Ok();
         }

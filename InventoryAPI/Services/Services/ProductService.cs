@@ -3,6 +3,7 @@ using DAL.Entities;
 using DAL.Repositories;
 using DTOs;
 using Microsoft.Extensions.Logging;
+using Microsoft.VisualBasic;
 
 namespace Services.Services
 {
@@ -12,6 +13,7 @@ namespace Services.Services
         Task<IEnumerable<ProductDTO>> GetAll();
         Task<ProductDTO?> GetById(Guid id);
         Task Update(Guid id, ProductInputDTO productDTO);
+        Task Delete(Guid id);
     }
 
     public class ProductService : IProductService
@@ -99,6 +101,26 @@ namespace Services.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message, "Error updating product.");
+                throw;
+            }
+        }
+
+        public async Task Delete(Guid id)
+        {
+            try
+            {
+                var product = await _productRepository.GetById(id);
+
+                if (product == null)
+                    throw new ArgumentException($"Product with id {id} not found");
+                // TODO: podria usar excepciones personalizadas y un middleware que trate esta excepcion como un 400
+
+                if (product != null)
+                    await _productRepository.Delete(product);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, "Error deleting product.");
                 throw;
             }
         }
