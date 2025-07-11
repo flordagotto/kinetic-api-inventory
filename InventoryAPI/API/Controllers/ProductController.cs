@@ -1,4 +1,4 @@
-using DTOs;
+using DTOs.ApiDtos;
 using Microsoft.AspNetCore.Mvc;
 using Services.Services;
 

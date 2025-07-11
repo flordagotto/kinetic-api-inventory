@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using DAL.Entities;
-using DTOs;
+using DTOs.ApiDtos;
 
 namespace Services.Mappers
 {
