@@ -9,7 +9,7 @@ namespace DAL.DI
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services)
         {
             services.AddDbContext<ProductsDbContext>(options =>
-                options.UseSqlite("Data Source=notifications.db"));
+                options.UseSqlite("Data Source=inventory.db"));
 
             services.AddScoped<IProductRepository, ProductRepository>();
 
