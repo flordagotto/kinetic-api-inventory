@@ -102,19 +102,33 @@ namespace Services.Services
         {
             try
             {
-                var oldProduct = await _productRepository.GetById(id);
+                var productToUpdate = await _productRepository.GetById(id);
 
-                if (oldProduct == null)
+                if (productToUpdate == null)
                     throw new ArgumentException($"Product with id {id} not found");
                 // TODO: podria usar excepciones personalizadas y un middleware que trate esta excepcion como un 400
 
-                oldProduct.Stock = productDTO.Stock;
-                oldProduct.Price = productDTO.Price;
-                oldProduct.Description = productDTO.Description;
-                oldProduct.Category = productDTO.Category;
-                oldProduct.ProductName = productDTO.ProductName;
+                productToUpdate.Stock = productDTO.Stock;
+                productToUpdate.Price = productDTO.Price;
+                productToUpdate.Description = productDTO.Description;
+                productToUpdate.Category = productDTO.Category;
+                productToUpdate.ProductName = productDTO.ProductName;
 
                 await _productRepository.SaveChangesAsync();
+
+                var productUpdatedMessage = new ProductEventMessage
+                {
+                    Id = productToUpdate.Id,
+                    Stock = productToUpdate.Stock,
+                    Price = productToUpdate.Price,
+                    ProductName = productToUpdate.ProductName,
+                    Category = productToUpdate.Category,
+                    Description = productToUpdate.Description,
+                    EventDate = DateTime.Now,
+                    EventType = ProductEventType.Updated
+                };
+
+                await _rabbitPublisher.PublishAsync(productUpdatedMessage);
             }
             catch (Exception ex)
             {
@@ -134,7 +148,17 @@ namespace Services.Services
                 // TODO: podria usar excepciones personalizadas y un middleware que trate esta excepcion como un 400
 
                 if (product != null)
+                {
                     await _productRepository.Delete(product);
+
+                    var productDeletedMessage = new ProductDeletedEventMessage
+                    {
+                        Id = product.Id,
+                        EventDate = DateTime.Now,
+                    };
+
+                    await _rabbitPublisher.PublishAsync(productDeletedMessage);
+                }
             }
             catch (Exception ex)
             {

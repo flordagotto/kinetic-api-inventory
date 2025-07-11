@@ -1,5 +1,6 @@
 ﻿using DTOs.RabbitDtos;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Polly;
 using Polly.CircuitBreaker;
 using Polly.Wrap;
@@ -7,6 +8,7 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Exceptions;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Services.Services
 {
@@ -25,6 +27,8 @@ namespace Services.Services
         private IConnection _connection;
         private IChannel _channel;
 
+        private readonly JsonSerializerOptions _options;
+
         private readonly AsyncPolicy _retryPolicy;
         private readonly AsyncCircuitBreakerPolicy _circuitBreakerPolicy;
         private readonly AsyncPolicyWrap _policyWrap;
@@ -33,6 +37,11 @@ namespace Services.Services
 
         public RabbitMqPublisher(IConfiguration configuration)
         {
+            _options = new JsonSerializerOptions
+            {
+                Converters = { new JsonStringEnumConverter() }
+            };
+
             _factory = new ConnectionFactory
             {
                 //HostName = configuration["RabbitMQ:HostName"],
@@ -67,7 +76,8 @@ namespace Services.Services
             await EnsureConnectionAsync();
 
             var routingKey = GetRoutingKey(productMessage.EventType);
-            var message = JsonSerializer.Serialize(productMessage);
+
+            var message = JsonSerializer.Serialize(productMessage, productMessage.GetType(), _options);
 
             await _policyWrap.ExecuteAsync(async () =>
             {
@@ -89,7 +99,7 @@ namespace Services.Services
             if (eventType is ProductEventType.Updated)
                 return PRODUCT_UPDATED_ROUTING_KEY;
 
-            return PRODUCT_DELETED_ROUTING_KEY ;
+            return PRODUCT_DELETED_ROUTING_KEY;
         }
 
         private async Task EnsureConnectionAsync()
