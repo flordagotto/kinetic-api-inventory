@@ -56,7 +56,6 @@ namespace Services.Services
            .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
                (ex, time) => Console.WriteLine($"Retrying after {time.TotalSeconds}s due to: {ex.Message}"));
 
-            // Opens the circuit after 2 failures in a row, and waits 15 seconds to re open it
             _circuitBreakerPolicy = Policy.Handle<BrokerUnreachableException>()
                 .Or<Exception>()
                 .CircuitBreakerAsync(2, TimeSpan.FromSeconds(15),
@@ -85,7 +84,10 @@ namespace Services.Services
                 await _channel.BasicPublishAsync(exchange: EXCHANGE_NAME,
                                       routingKey: routingKey,
                                       mandatory: true,
-                                      basicProperties: new BasicProperties { Persistent = true },
+                                      basicProperties: new BasicProperties { 
+                                          Persistent = true, 
+                                          Headers = new Dictionary<string, object?> { { "x-retries", 0 } },
+                                          },
                                       body: body);
             });
         }
@@ -131,9 +133,17 @@ namespace Services.Services
 
             foreach (var (queueName, routingKey) in queues)
             {
-                await _channel.QueueDeclareAsync(queue: queueName, durable: true, exclusive: false, autoDelete: false, arguments: null);
+                var args = new Dictionary<string, object>
+                {
+                    {"x-dead-letter-exchange",EXCHANGE_NAME },
+                    {"x-dead-letter-routing-key", $"{routingKey}.dlq" },
+                };
+                await _channel.QueueDeclareAsync(queue: queueName, durable: true, exclusive: false, autoDelete: false, arguments: args);
+                await _channel.QueueDeclareAsync(queue: $"{queueName}.dlq", durable: true, exclusive: false, autoDelete: false, arguments: null);
 
                 await _channel.QueueBindAsync(queue: queueName, exchange: EXCHANGE_NAME, routingKey: routingKey);
+                await _channel.QueueBindAsync(queue: $"{queueName}.dlq", exchange: EXCHANGE_NAME, routingKey: $"{routingKey}.dlq");
+
             }
         }
 
