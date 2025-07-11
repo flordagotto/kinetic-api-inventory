@@ -6,10 +6,10 @@ namespace DAL.DI
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddInfrastructureServices(this IServiceCollection services)
+        public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, string connectionString)
         {
             services.AddDbContext<ProductsDbContext>(options =>
-                options.UseSqlite("Data Source=inventory.db"));
+                options.UseSqlite(connectionString));
 
             services.AddScoped<IProductRepository, ProductRepository>();
 
