@@ -41,19 +41,9 @@ namespace Services.Services
 
                 await _productRepository.Add(product);
 
-                var productCreatedMessage = new ProductEventMessage
-                {
-                    ProductId = product.Id,
-                    Stock = product.Stock,
-                    Price = product.Price,
-                    ProductName = product.ProductName,
-                    Category = product.Category,
-                    Description = product.Description,
-                    EventDate = DateTime.Now,
-                    EventType = ProductEventType.Created
-                };
+                var eventMessage = CreateEventMessage(product, ProductEventType.Created);
 
-                await _rabbitPublisher.PublishAsync(productCreatedMessage);
+                await _rabbitPublisher.PublishAsync(eventMessage);
             }
             catch (Exception ex)
             {
@@ -102,33 +92,23 @@ namespace Services.Services
         {
             try
             {
-                var productToUpdate = await _productRepository.GetById(id);
+                var product = await _productRepository.GetById(id);
 
-                if (productToUpdate == null)
+                if (product == null)
                     throw new ArgumentException($"Product with id {id} not found");
                 // TODO: podria usar excepciones personalizadas y un middleware que trate esta excepcion como un 400
 
-                productToUpdate.Stock = productDTO.Stock;
-                productToUpdate.Price = productDTO.Price;
-                productToUpdate.Description = productDTO.Description;
-                productToUpdate.Category = productDTO.Category;
-                productToUpdate.ProductName = productDTO.ProductName;
+                product.Stock = productDTO.Stock;
+                product.Price = productDTO.Price;
+                product.Description = productDTO.Description;
+                product.Category = productDTO.Category;
+                product.ProductName = productDTO.ProductName;
 
                 await _productRepository.SaveChangesAsync();
 
-                var productUpdatedMessage = new ProductEventMessage
-                {
-                    ProductId = productToUpdate.Id,
-                    Stock = productToUpdate.Stock,
-                    Price = productToUpdate.Price,
-                    ProductName = productToUpdate.ProductName,
-                    Category = productToUpdate.Category,
-                    Description = productToUpdate.Description,
-                    EventDate = DateTime.Now,
-                    EventType = ProductEventType.Updated
-                };
+                var eventMessage = CreateEventMessage(product, ProductEventType.Updated);
 
-                await _rabbitPublisher.PublishAsync(productUpdatedMessage);
+                await _rabbitPublisher.PublishAsync(eventMessage);
             }
             catch (Exception ex)
             {
@@ -151,13 +131,9 @@ namespace Services.Services
                 {
                     await _productRepository.Delete(product);
 
-                    var productDeletedMessage = new ProductDeletedEventMessage
-                    {
-                        ProductId = product.Id,
-                        EventDate = DateTime.Now,
-                    };
+                    var eventMessage = CreateEventMessage(product, ProductEventType.Deleted);
 
-                    await _rabbitPublisher.PublishAsync(productDeletedMessage);
+                    await _rabbitPublisher.PublishAsync(eventMessage);
                 }
             }
             catch (Exception ex)
@@ -167,5 +143,12 @@ namespace Services.Services
             }
         }
 
+        private EventMessage CreateEventMessage(Product product, ProductEventType eventType) =>
+            new()
+            {
+                ProductId = product.Id,
+                EventDate = DateTime.Now,
+                EventType = eventType,
+            };
     }
 }

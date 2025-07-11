@@ -76,7 +76,7 @@ namespace Services.Services
 
             var routingKey = GetRoutingKey(productMessage.EventType);
 
-            var message = JsonSerializer.Serialize(productMessage, productMessage.GetType(), _options);
+            var message = JsonSerializer.Serialize(productMessage, _options);
 
             await _policyWrap.ExecuteAsync(async () =>
             {
