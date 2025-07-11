@@ -1,6 +1,5 @@
 ﻿using DTOs.RabbitDtos;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
 using Polly;
 using Polly.CircuitBreaker;
 using Polly.Wrap;
@@ -19,10 +18,6 @@ namespace Services.Services
 
     public class RabbitMqPublisher : IRabbitMqPublisher
     {
-        private const string PRODUCT_CREATED_ROUTING_KEY = "product.created";
-        private const string PRODUCT_UPDATED_ROUTING_KEY = "product.updated";
-        private const string PRODUCT_DELETED_ROUTING_KEY = "product.deleted";
-
         private readonly ConnectionFactory _factory;
         private IConnection _connection;
         private IChannel _channel;
@@ -32,6 +27,10 @@ namespace Services.Services
         private readonly AsyncPolicy _retryPolicy;
         private readonly AsyncCircuitBreakerPolicy _circuitBreakerPolicy;
         private readonly AsyncPolicyWrap _policyWrap;
+
+        private const string PRODUCT_CREATED_ROUTING_KEY = "product.created";
+        private const string PRODUCT_UPDATED_ROUTING_KEY = "product.updated";
+        private const string PRODUCT_DELETED_ROUTING_KEY = "product.deleted";
 
         private const string EXCHANGE_NAME = "inventory_exchange";
 

@@ -43,7 +43,7 @@ namespace Services.Services
 
                 var productCreatedMessage = new ProductEventMessage
                 {
-                    Id = product.Id,
+                    ProductId = product.Id,
                     Stock = product.Stock,
                     Price = product.Price,
                     ProductName = product.ProductName,
@@ -118,7 +118,7 @@ namespace Services.Services
 
                 var productUpdatedMessage = new ProductEventMessage
                 {
-                    Id = productToUpdate.Id,
+                    ProductId = productToUpdate.Id,
                     Stock = productToUpdate.Stock,
                     Price = productToUpdate.Price,
                     ProductName = productToUpdate.ProductName,
@@ -153,7 +153,7 @@ namespace Services.Services
 
                     var productDeletedMessage = new ProductDeletedEventMessage
                     {
-                        Id = product.Id,
+                        ProductId = product.Id,
                         EventDate = DateTime.Now,
                     };
 
