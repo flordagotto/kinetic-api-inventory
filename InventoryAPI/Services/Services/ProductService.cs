@@ -2,8 +2,10 @@
 using DAL.Entities;
 using DAL.Repositories;
 using DTOs.ApiDtos;
+using DTOs.RabbitDtos;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualBasic;
+using System.Text.Json;
 
 namespace Services.Services
 {
@@ -38,6 +40,20 @@ namespace Services.Services
                 var product = _mapper.Map<Product>(newProductDTO);
 
                 await _productRepository.Add(product);
+
+                var productCreatedMessage = new ProductEventMessage
+                {
+                    Id = product.Id,
+                    Stock = product.Stock,
+                    Price = product.Price,
+                    ProductName = product.ProductName,
+                    Category = product.Category,
+                    Description = product.Description,
+                    EventDate = DateTime.Now,
+                    EventType = ProductEventType.Created
+                };
+
+                await _rabbitPublisher.PublishAsync(productCreatedMessage);
             }
             catch (Exception ex)
             {
