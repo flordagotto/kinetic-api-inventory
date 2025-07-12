@@ -58,7 +58,11 @@ Acceso a datos con Entity Framework Core.
 
 Define la base SQLite inventory.db
 Esta base se puede observar dentro del contenedor de Docker en /app, y visualizar con herramientas como DB Browser (SQLite).
+Podés copiar el archivo desde el contenedor y abrirlo localmente con herramientas como DB Browser SQLite.
+Tambien podes acceder desde la consola, entrando al contenedor y copiando el archivo a local. El archivo puede demorar en actualizarse en el contenedor, se recomienda esperar unos minutos luego de procesar los mensajes.
 
+docker ps
+docker cp inventoryapi-api:/app/inventory.db ./inventory.db
 Contiene entidades de dominio y repositorios.
 
 ### DTOs
