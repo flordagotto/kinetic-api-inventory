@@ -81,14 +81,17 @@ namespace Services.Services
             {
                 var body = Encoding.UTF8.GetBytes(message);
 
-                await _channel.BasicPublishAsync(exchange: EXCHANGE_NAME,
-                                      routingKey: routingKey,
-                                      mandatory: true,
-                                      basicProperties: new BasicProperties { 
-                                          Persistent = true, 
-                                          Headers = new Dictionary<string, object?> { { "x-retries", 0 } },
-                                          },
-                                      body: body);
+                    await _channel.BasicPublishAsync(exchange: EXCHANGE_NAME,
+                                                  routingKey: routingKey,
+                                                  mandatory: true,
+                                                  basicProperties: new BasicProperties
+                                                  {
+                                                      Persistent = true,
+                                                      Headers = new Dictionary<string, object?> { { "x-retries", 0 } },
+                                                  },
+                                                  body: body);
+
+                Console.WriteLine($"Message sent: {routingKey}, {message}");
             });
         }
 
@@ -116,6 +119,12 @@ namespace Services.Services
                 _channel?.Dispose();
                 _channel = await _connection.CreateChannelAsync();
 
+                _channel.BasicReturnAsync += async (sender, ea) =>
+                {
+                    var returnedMessage = Encoding.UTF8.GetString(ea.Body.ToArray());
+                    Console.WriteLine($"[RETURNED] Message returned: {returnedMessage}, reply code: {ea.ReplyCode}, text: {ea.ReplyText}");
+                };
+
                 await _channel.ExchangeDeclareAsync(exchange: EXCHANGE_NAME, type: ExchangeType.Direct, durable: true);
 
                 await CreateQueues();
@@ -135,7 +144,7 @@ namespace Services.Services
             {
                 var args = new Dictionary<string, object>
                 {
-                    {"x-dead-letter-exchange",EXCHANGE_NAME },
+                    {"x-dead-letter-exchange", EXCHANGE_NAME },
                     {"x-dead-letter-routing-key", $"{routingKey}.dlq" },
                 };
                 await _channel.QueueDeclareAsync(queue: queueName, durable: true, exclusive: false, autoDelete: false, arguments: args);
