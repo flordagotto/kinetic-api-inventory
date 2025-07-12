@@ -43,10 +43,8 @@ namespace Services.Services
 
             _factory = new ConnectionFactory
             {
-                //HostName = configuration["RabbitMQ:HostName"],
-                //Port = int.Parse(configuration["RabbitMQ:Port"]),
-                HostName = "localhost",
-                Port = 5672,
+                HostName = configuration["RabbitMQ:HostName"],
+                Port = int.Parse(configuration["RabbitMQ:Port"]),
                 UserName = configuration["RabbitMQ:UserName"],
                 Password = configuration["RabbitMQ:Password"]
             };
