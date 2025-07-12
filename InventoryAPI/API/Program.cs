@@ -7,8 +7,6 @@ using Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.WebHost.UseUrls("http://*:80");
-
 builder.Services.AddInfrastructureServices(builder.Configuration.GetConnectionString("DefaultConnection"));
 builder.Services.AddApplicationServices();
 
@@ -33,8 +31,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
