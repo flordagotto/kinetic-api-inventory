@@ -28,11 +28,11 @@ namespace Services.Services
         private readonly AsyncCircuitBreakerPolicy _circuitBreakerPolicy;
         private readonly AsyncPolicyWrap _policyWrap;
 
+        private readonly string _exchangeName;
+
         private const string PRODUCT_CREATED_ROUTING_KEY = "product.created";
         private const string PRODUCT_UPDATED_ROUTING_KEY = "product.updated";
         private const string PRODUCT_DELETED_ROUTING_KEY = "product.deleted";
-
-        private const string EXCHANGE_NAME = "inventory_exchange";
 
         public RabbitMqPublisher(IConfiguration configuration)
         {
@@ -43,10 +43,10 @@ namespace Services.Services
 
             _factory = new ConnectionFactory
             {
-                HostName = configuration["RabbitMQ:HostName"],
-                Port = int.Parse(configuration["RabbitMQ:Port"]),
-                UserName = configuration["RabbitMQ:UserName"],
-                Password = configuration["RabbitMQ:Password"]
+                HostName = configuration["RabbitMQ:HostName"] ?? throw new InvalidOperationException("RabbitMQ:HostName is not configured."),
+                Port = int.Parse(configuration["RabbitMQ:Port"] ?? "5672"),
+                UserName = configuration["RabbitMQ:UserName"] ?? throw new InvalidOperationException("RabbitMQ:UserName is not configured."),
+                Password = configuration["RabbitMQ:Password"] ?? throw new InvalidOperationException("RabbitMQ:Password is not configured.")
             };
 
             _retryPolicy = Policy.Handle<BrokerUnreachableException>()
@@ -79,7 +79,7 @@ namespace Services.Services
             {
                 var body = Encoding.UTF8.GetBytes(message);
 
-                    await _channel.BasicPublishAsync(exchange: EXCHANGE_NAME,
+                    await _channel.BasicPublishAsync(exchange: _exchangeName,
                                                   routingKey: routingKey,
                                                   mandatory: true,
                                                   basicProperties: new BasicProperties
@@ -123,7 +123,7 @@ namespace Services.Services
                     Console.WriteLine($"[RETURNED] Message returned: {returnedMessage}, reply code: {ea.ReplyCode}, text: {ea.ReplyText}");
                 };
 
-                await _channel.ExchangeDeclareAsync(exchange: EXCHANGE_NAME, type: ExchangeType.Direct, durable: true);
+                await _channel.ExchangeDeclareAsync(exchange: _exchangeName, type: ExchangeType.Direct, durable: true);
 
                 await CreateQueues();
             });
@@ -142,14 +142,14 @@ namespace Services.Services
             {
                 var args = new Dictionary<string, object>
                 {
-                    {"x-dead-letter-exchange", EXCHANGE_NAME },
+                    {"x-dead-letter-exchange", _exchangeName },
                     {"x-dead-letter-routing-key", $"{routingKey}.dlq" },
                 };
                 await _channel.QueueDeclareAsync(queue: queueName, durable: true, exclusive: false, autoDelete: false, arguments: args);
                 await _channel.QueueDeclareAsync(queue: $"{queueName}.dlq", durable: true, exclusive: false, autoDelete: false, arguments: null);
 
-                await _channel.QueueBindAsync(queue: queueName, exchange: EXCHANGE_NAME, routingKey: routingKey);
-                await _channel.QueueBindAsync(queue: $"{queueName}.dlq", exchange: EXCHANGE_NAME, routingKey: $"{routingKey}.dlq");
+                await _channel.QueueBindAsync(queue: queueName, exchange: _exchangeName, routingKey: routingKey);
+                await _channel.QueueBindAsync(queue: $"{queueName}.dlq", exchange: _exchangeName, routingKey: $"{routingKey}.dlq");
 
             }
         }
