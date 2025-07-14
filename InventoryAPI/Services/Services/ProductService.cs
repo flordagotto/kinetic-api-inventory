@@ -127,14 +127,11 @@ namespace Services.Services
                     throw new ArgumentException($"Product with id {id} not found");
                 // TODO: podria usar excepciones personalizadas y un middleware que trate esta excepcion como un 400
 
-                if (product != null)
-                {
-                    await _productRepository.Delete(product);
+                await _productRepository.Delete(product);
 
-                    var eventMessage = CreateEventMessage(product, ProductEventType.Deleted);
+                var eventMessage = CreateEventMessage(product, ProductEventType.Deleted);
 
-                    await _rabbitPublisher.PublishAsync(eventMessage);
-                }
+                await _rabbitPublisher.PublishAsync(eventMessage);
             }
             catch (Exception ex)
             {
