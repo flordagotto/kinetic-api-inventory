@@ -11,8 +11,10 @@ API para gestionar un inventario de productos y publicar eventos a RabbitMQ. Usa
 ### 1. Clonar repo
 
 git clone <url-repo-inventory>
-cd kinetic-api-inventory
-docker-compose up --build
+
+cd kinetic-api-inventory/InventoryAPI
+
+docker compose up
 
 Este docker-compose.yml incluye RabbitMQ para pruebas locales. Se debe ejecutar primero. Al realizar la primera modificacion en el inventario se crean las colas de Rabbit.
 
