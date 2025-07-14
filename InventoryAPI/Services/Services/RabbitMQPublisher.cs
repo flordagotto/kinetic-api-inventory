@@ -41,6 +41,8 @@ namespace Services.Services
                 Converters = { new JsonStringEnumConverter() }
             };
 
+            _exchangeName = configuration["RabbitMQ:ExchangeName"] ?? throw new InvalidOperationException("RabbitMQ:ExchangeName is not configured.");
+               
             _factory = new ConnectionFactory
             {
                 HostName = configuration["RabbitMQ:HostName"] ?? throw new InvalidOperationException("RabbitMQ:HostName is not configured."),
