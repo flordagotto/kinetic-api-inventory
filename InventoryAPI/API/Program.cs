@@ -1,7 +1,6 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using DAL;
-using DAL.DI;
 using Microsoft.EntityFrameworkCore;
 using Services;
 

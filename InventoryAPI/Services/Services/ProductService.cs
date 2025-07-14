@@ -104,7 +104,7 @@ namespace Services.Services
                 product.Category = productDTO.Category;
                 product.ProductName = productDTO.ProductName;
 
-                await _productRepository.SaveChangesAsync();
+                await _productRepository.Update();
 
                 var eventMessage = CreateEventMessage(product, ProductEventType.Updated);
 

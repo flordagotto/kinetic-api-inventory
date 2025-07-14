@@ -6,14 +6,9 @@ namespace API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class ProductController : ControllerBase
+    public class ProductController(IProductService productService) : ControllerBase
     {
-        private readonly IProductService _productService;
-
-        public ProductController(IProductService productService)
-        {
-            _productService = productService;
-        }
+        private readonly IProductService _productService = productService;
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] ProductInputDTO newProductDTO)
