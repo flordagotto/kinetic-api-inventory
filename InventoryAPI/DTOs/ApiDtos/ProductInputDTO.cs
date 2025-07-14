@@ -2,10 +2,10 @@
 {
     public class ProductInputDTO
     {
-        public string ProductName { get; set; } = null!;
-        public string Description { get; set; } = null!;
-        public decimal Price { get; set; }
-        public int Stock { get; set; }
-        public string Category { get; set; } = null!;
+        public string ProductName { get; init; } = null!;
+        public string Description { get; init; } = null!;
+        public decimal Price { get; init; }
+        public int Stock { get; init; }
+        public string Category { get; init; } = null!;
     }
 }

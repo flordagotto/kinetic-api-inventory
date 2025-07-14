@@ -6,14 +6,12 @@ namespace Services
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddApplicationServices(this IServiceCollection services)
+        public static void AddApplicationServices(this IServiceCollection services)
         {
             services.AddScoped<IProductService, ProductService>();
             services.AddSingleton<IRabbitMqPublisher, RabbitMqPublisher>();
 
             services.AddAutoMapper(typeof(ProductMapper).Assembly);
-
-            return services;
         }
     }
 }

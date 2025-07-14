@@ -9,7 +9,7 @@ namespace DAL.Repositories
         Task<IEnumerable<Product>> Get();
         Task<Product?> GetById(Guid id);
         Task Delete(Product product);
-        Task SaveChangesAsync();
+        Task Update();
     }
 
     public class ProductRepository : IProductRepository
@@ -39,7 +39,7 @@ namespace DAL.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task SaveChangesAsync()
+        public async Task Update()
         {
             await _context.SaveChangesAsync();
         }
